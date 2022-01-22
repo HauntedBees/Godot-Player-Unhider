@@ -8,9 +8,20 @@
 
 config_version=4
 
+_global_script_classes=[ {
+"base": "Spatial",
+"class": "Unhider",
+"language": "GDScript",
+"path": "res://Unhider.gd"
+} ]
+_global_script_class_icons={
+"Unhider": ""
+}
+
 [application]
 
 config/name="Player Unhider"
+run/main_scene="res://Example.tscn"
 config/icon="res://icon.png"
 
 [physics]
