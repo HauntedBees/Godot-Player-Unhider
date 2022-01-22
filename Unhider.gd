@@ -1,18 +1,23 @@
 class_name Unhider
 extends Spatial
+var dots_shader:ShaderMaterial = preload("res://partial.tres")
 export(bool) var active := true
 export(String) var player_group := "player"
 export(Vector3) var player_offset := Vector3(0, -0.15, 0)
 export(int, "PhysicsBody is child of MeshInstance", "MeshInstance is child of PhysicsBody") var mesh_relation := 0
-export(String, "alpha") var transparency_type := "alpha"
+export(String, "alpha", "dots") var transparency_type := "dots"
 onready var camera:Camera = get_viewport().get_camera()
 onready var world:World = get_world()
 var player:Spatial = null
 var last_focused_object:MeshInstance = null
 var original_material:Material = null
+var tween:Tween = null
 
 # warning-ignore:return_value_discarded
-func _ready(): _try_find_player_node()
+func _ready():
+	tween = Tween.new()
+	add_child(tween)
+	_try_find_player_node()
 func _try_find_player_node() -> bool:
 	var group_nodes := get_tree().get_nodes_in_group(player_group)
 	if group_nodes.size() == 0: return false
@@ -38,7 +43,7 @@ func _process(_delta):
 			print("Couldn't find a mesh!")
 			return
 		if found_mesh == last_focused_object: return
-		if last_focused_object != null: _show_mesh(last_focused_object)
+		if last_focused_object != null: _show_mesh(last_focused_object, true)
 		_hide_mesh(found_mesh)
 		last_focused_object = found_mesh
 
@@ -54,16 +59,34 @@ func _hide_mesh(m:MeshInstance):
 	if last_focused_object == m: return
 	var mat := _get_material(m)
 	if mat == null: return
+	original_material = mat
 	match transparency_type:
 		"alpha":
-			original_material = mat
 			var mn := mat.duplicate()
 			mn.flags_transparent = true
 			mn.albedo_color.a = 0.5
 			m.set_surface_material(0, mn)
+		"dots":
+			m.set_surface_material(0, dots_shader)
+			if mat.albedo_texture == null:
+				dots_shader.set_shader_param("use_color", true)
+				dots_shader.set_shader_param("color_albedo", mat.albedo_color)
+			else:
+				dots_shader.set_shader_param("use_color", false)
+				dots_shader.set_shader_param("texture_albedo", mat.albedo_texture)
+			tween.interpolate_property(dots_shader, "shader_param/dot_radius", 2.0, 0.2, 0.25)
+			tween.start()
 
-func _show_mesh(m:MeshInstance):
-	m.set_surface_material(0, original_material)
+func _show_mesh(m:MeshInstance, immediate:bool = false):
+	match transparency_type:
+		"alpha":
+			m.set_surface_material(0, original_material)
+		"dots":
+			if !immediate:
+				tween.interpolate_property(dots_shader, "shader_param/dot_radius", 0.2, 2.0, 0.25)
+				tween.start()
+				yield(tween, "tween_completed")
+			m.set_surface_material(0, original_material)
 	original_material = null
 
 func _get_material(m:MeshInstance) -> SpatialMaterial: 
