@@ -5,7 +5,7 @@ export(bool) var active := true
 export(String) var player_group := "player"
 export(Vector3) var player_offset := Vector3(0, -0.15, 0)
 export(int, "PhysicsBody is child of MeshInstance", "MeshInstance is child of PhysicsBody") var mesh_relation := 0
-export(String, "alpha", "dots") var transparency_type := "dots"
+export(String, "none", "alpha", "dots") var transparency_type := "none"
 onready var camera:Camera = get_viewport().get_camera()
 onready var world:World = get_world()
 var player:Spatial = null
@@ -23,7 +23,7 @@ func _try_find_player_node() -> bool:
 	if group_nodes.size() == 0: return false
 	player = group_nodes[0]
 	return true
-
+	
 func _process(_delta):
 	if !active: return
 	if player == null && !_try_find_player_node(): return
@@ -74,7 +74,7 @@ func _hide_mesh(m:MeshInstance):
 			else:
 				dots_shader.set_shader_param("use_color", false)
 				dots_shader.set_shader_param("texture_albedo", mat.albedo_texture)
-			tween.interpolate_property(dots_shader, "shader_param/dot_radius", 2.0, 0.2, 0.25)
+			tween.interpolate_property(dots_shader, "shader_param/dot_radius", 1.2, 0.2, 0.25)
 			tween.start()
 
 func _show_mesh(m:MeshInstance, immediate:bool = false):
@@ -83,7 +83,7 @@ func _show_mesh(m:MeshInstance, immediate:bool = false):
 			m.set_surface_material(0, original_material)
 		"dots":
 			if !immediate:
-				tween.interpolate_property(dots_shader, "shader_param/dot_radius", 0.2, 2.0, 0.25)
+				tween.interpolate_property(dots_shader, "shader_param/dot_radius", 0.2, 1.2, 0.25)
 				tween.start()
 				yield(tween, "tween_completed")
 			m.set_surface_material(0, original_material)

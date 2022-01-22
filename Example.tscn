@@ -92,39 +92,53 @@ mesh = SubResource( 6 )
 skeleton = NodePath("../..")
 material/0 = null
 
-[node name="HScrollBar" type="HScrollBar" parent="."]
-margin_left = 3.0
-margin_top = 576.0
-margin_right = 235.0
-margin_bottom = 595.0
+[node name="Unhider" type="Spatial" parent="."]
+script = ExtResource( 2 )
+
+[node name="Control" type="Control" parent="."]
+anchor_top = 1.0
+anchor_bottom = 1.0
+margin_top = -158.0
+margin_right = 306.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HScrollBar" type="HScrollBar" parent="Control"]
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -140.0
+margin_top = -23.0
+margin_right = 94.0
+margin_bottom = -10.0
+size_flags_horizontal = 3
 max_value = 360.0
 step = 1.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Label" type="Label" parent="."]
-margin_left = 31.0
-margin_top = 559.0
-margin_right = 140.0
-margin_bottom = 573.0
+[node name="Label" type="Label" parent="Control"]
+margin_left = 28.0
+margin_top = 116.0
+margin_right = 152.0
+margin_bottom = 130.0
 text = "Camera Rotation"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="VScrollBar" type="VScrollBar" parent="."]
-margin_left = 4.0
-margin_top = 486.0
+[node name="VScrollBar" type="VScrollBar" parent="Control"]
+margin_left = 11.0
+margin_top = -11.0
 margin_right = 23.0
-margin_bottom = 574.0
+margin_bottom = 133.0
 max_value = 360.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Unhider" type="Spatial" parent="."]
-script = ExtResource( 2 )
-
-[connection signal="value_changed" from="HScrollBar" to="." method="_on_HScrollBar_value_changed"]
-[connection signal="value_changed" from="VScrollBar" to="." method="_on_VScrollBar_value_changed"]
+[connection signal="value_changed" from="Control/HScrollBar" to="." method="_on_HScrollBar_value_changed"]
+[connection signal="value_changed" from="Control/VScrollBar" to="." method="_on_VScrollBar_value_changed"]
