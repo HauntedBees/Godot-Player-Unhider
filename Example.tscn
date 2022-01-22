@@ -1,0 +1,91 @@
+[gd_scene load_steps=8 format=2]
+
+[sub_resource type="PlaneMesh" id=1]
+
+[sub_resource type="SpatialMaterial" id=2]
+albedo_color = Color( 0, 0.639216, 0.0509804, 1 )
+metallic_specular = 0.0
+
+[sub_resource type="CapsuleMesh" id=3]
+
+[sub_resource type="SpatialMaterial" id=4]
+albedo_color = Color( 0, 0.592157, 0.0509804, 1 )
+
+[sub_resource type="CapsuleShape" id=5]
+
+[sub_resource type="CapsuleMesh" id=6]
+
+[sub_resource type="CapsuleShape" id=7]
+
+[node name="Example" type="Spatial"]
+
+[node name="Ground" type="MeshInstance" parent="."]
+mesh = SubResource( 1 )
+material/0 = SubResource( 2 )
+
+[node name="Obstacle" type="MeshInstance" parent="."]
+transform = Transform( 0.1, 0, 0, 0, -4.37114e-09, -0.21, 0, 0.1, -9.17939e-09, -0.72758, 0, 0.318031 )
+mesh = SubResource( 3 )
+material/0 = SubResource( 4 )
+
+[node name="StaticBody" type="StaticBody" parent="Obstacle"]
+
+[node name="CollisionShape" type="CollisionShape" parent="Obstacle/StaticBody"]
+shape = SubResource( 5 )
+
+[node name="Obstacle3" type="MeshInstance" parent="."]
+transform = Transform( 0.1, 0, 0, 0, -4.37114e-09, -0.21, 0, 0.1, -9.17939e-09, -0.297676, 0, 0.62615 )
+mesh = SubResource( 3 )
+material/0 = SubResource( 4 )
+
+[node name="StaticBody" type="StaticBody" parent="Obstacle3"]
+
+[node name="CollisionShape" type="CollisionShape" parent="Obstacle3/StaticBody"]
+shape = SubResource( 5 )
+
+[node name="Obstacle2" type="MeshInstance" parent="."]
+transform = Transform( 0.308445, -0.0636698, 1.39155e-08, 0, -4.37114e-09, -0.5, 0.254679, 0.0771114, -1.68532e-08, 0.473331, 0, -0.373589 )
+mesh = SubResource( 3 )
+material/0 = SubResource( 4 )
+
+[node name="StaticBody" type="StaticBody" parent="Obstacle2"]
+
+[node name="CollisionShape" type="CollisionShape" parent="Obstacle2/StaticBody"]
+shape = SubResource( 5 )
+
+[node name="Gimbal" type="Spatial" parent="."]
+
+[node name="Camera" type="Camera" parent="Gimbal"]
+transform = Transform( 1, 0, 0, 0, 0.923859, 0.382732, 0, -0.382732, 0.923859, 0, 0.803373, 1.72693 )
+current = true
+
+[node name="Player" type="MeshInstance" parent="."]
+transform = Transform( 0.1, 0, 0, 0, -4.37114e-09, -0.1, 0, 0.1, -4.37114e-09, 0, 0.15, 0 )
+mesh = SubResource( 6 )
+material/0 = null
+
+[node name="KinematicBody" type="KinematicBody" parent="Player"]
+
+[node name="CollisionShape" type="CollisionShape" parent="Player/KinematicBody"]
+shape = SubResource( 7 )
+
+[node name="HScrollBar" type="HScrollBar" parent="."]
+margin_left = 3.0
+margin_top = 576.0
+margin_right = 235.0
+margin_bottom = 595.0
+max_value = 360.0
+step = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="."]
+margin_left = 7.0
+margin_top = 561.0
+margin_right = 116.0
+margin_bottom = 575.0
+text = "Camera Rotation:"
+__meta__ = {
+"_edit_use_anchors_": false
+}
