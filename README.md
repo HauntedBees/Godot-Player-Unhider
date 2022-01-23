@@ -5,7 +5,7 @@ In a third-person 3D game, your player might walk behind something! Forget tryin
 Copy `addons/player_unhider` into your project (final path should be `res://addons/player_unhider`). In the Godot Editor, go to **Project Settings > Plugins** and enable the **Player Unhider** plugin. You can now add an **Unhider** node to a scene.
 
 # Usage
-Add an **Unhider** node to your scene and configure it in the **Inspector** as needed. Assign the appropriate **group** to your player character, and you're all set.
+Add an **Unhider** node to your scene and configure it in the **Inspector** as needed. Assign the appropriate **group**s to your player character and scenery, and you're all set.
 
 # Inspector Properties
 
