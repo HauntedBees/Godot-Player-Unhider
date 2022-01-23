@@ -1,11 +1,12 @@
 class_name Unhider
 extends Spatial
-var dots_shader:ShaderMaterial = preload("res://partial.tres")
+var dots_shader:ShaderMaterial = preload("res://addons/player_unhider/partial.tres")
 export(bool) var active := true
 export(String) var player_group := "player"
-export(Vector3) var player_offset := Vector3(0, -0.15, 0)
+export(String) var hide_group := "scenery"
+export(Vector3) var player_offset := Vector3(0, 0, 0)
 export(int, "PhysicsBody is child of MeshInstance", "MeshInstance is child of PhysicsBody") var mesh_relation := 0
-export(String, "none", "alpha", "dots") var transparency_type := "none"
+export(String, "none", "alpha", "dots") var transparency_type := "alpha"
 onready var camera:Camera = get_viewport().get_camera()
 onready var world:World = get_world()
 var player:Spatial = null
@@ -74,6 +75,7 @@ func _process(_delta):
 			_show_current_mesh(false)
 	else:
 		var found_node:PhysicsBody = result["collider"]
+		if hide_group != "" && !found_node.is_in_group(hide_group): return
 		var found_mesh:MeshInstance = _get_mesh_from_body(found_node)
 		if found_mesh == null:
 			print("Couldn't find a mesh!")

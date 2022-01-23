@@ -12,7 +12,7 @@ _global_script_classes=[ {
 "base": "Spatial",
 "class": "Unhider",
 "language": "GDScript",
-"path": "res://Unhider.gd"
+"path": "res://addons/player_unhider/unhider.gd"
 } ]
 _global_script_class_icons={
 "Unhider": ""
@@ -23,6 +23,10 @@ _global_script_class_icons={
 config/name="Player Unhider"
 run/main_scene="res://Example.tscn"
 config/icon="res://icon.png"
+
+[editor_plugins]
+
+enabled=PoolStringArray( "res://addons/player_unhider/plugin.cfg" )
 
 [physics]
 
