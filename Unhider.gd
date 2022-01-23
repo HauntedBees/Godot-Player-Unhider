@@ -9,11 +9,48 @@ export(String, "none", "alpha", "dots") var transparency_type := "none"
 onready var camera:Camera = get_viewport().get_camera()
 onready var world:World = get_world()
 var player:Spatial = null
-var last_focused_object:MeshInstance = null
-var original_material:Material = null
 var tween:Tween = null
+var current_focus_object:HiderInfo
+var clearing_queue := []
 
-# warning-ignore:return_value_discarded
+class HiderInfo:
+	signal completed
+	var mesh:MeshInstance
+	var material:Material
+	var tween:Tween
+	func _init(me:MeshInstance, ma:Material, t:Tween):
+		mesh = me
+		material = ma
+		tween = t
+	func hide(transparency_type:String, dots_shader:ShaderMaterial):
+		match transparency_type:
+			"alpha":
+				var mn := material.duplicate()
+				mn.flags_transparent = true
+				mn.albedo_color.a = 0.5
+				mesh.set_surface_material(0, mn)
+			"dots":
+				mesh.set_surface_material(0, dots_shader)
+				if material.albedo_texture == null:
+					dots_shader.set_shader_param("use_color", true)
+					dots_shader.set_shader_param("color_albedo", material.albedo_color)
+				else:
+					dots_shader.set_shader_param("use_color", false)
+					dots_shader.set_shader_param("texture_albedo", material.albedo_texture)
+				tween.interpolate_property(dots_shader, "shader_param/dot_radius", 1.2, 0.2, 0.25)
+				tween.start()
+	func show(transparency_type:String, dots_shader:ShaderMaterial, immediate:bool):
+		match transparency_type:
+			"alpha":
+				mesh.set_surface_material(0, material)
+			"dots":
+				if !immediate:
+					tween.interpolate_property(dots_shader, "shader_param/dot_radius", 0.2, 1.2, 0.25)
+					tween.start()
+					yield(tween, "tween_completed")
+				mesh.set_surface_material(0, material)
+		if !immediate: emit_signal("completed")
+
 func _ready():
 	tween = Tween.new()
 	add_child(tween)
@@ -33,19 +70,18 @@ func _process(_delta):
 	var space_state := world.direct_space_state
 	var result:Dictionary = space_state.intersect_ray(from, to)
 	if result.empty() || result["collider"] == player:
-		if last_focused_object != null:
-			_show_mesh(last_focused_object)
-			last_focused_object = null
+		if current_focus_object != null:
+			_show_current_mesh(false)
 	else:
 		var found_node:PhysicsBody = result["collider"]
 		var found_mesh:MeshInstance = _get_mesh_from_body(found_node)
 		if found_mesh == null:
 			print("Couldn't find a mesh!")
 			return
-		if found_mesh == last_focused_object: return
-		if last_focused_object != null: _show_mesh(last_focused_object, true)
+		if current_focus_object != null:
+			if current_focus_object.mesh == found_mesh: return
+			_show_current_mesh(true)
 		_hide_mesh(found_mesh)
-		last_focused_object = found_mesh
 
 func _get_mesh_from_body(b:PhysicsBody) -> MeshInstance:
 	if mesh_relation == 0:
@@ -56,38 +92,21 @@ func _get_mesh_from_body(b:PhysicsBody) -> MeshInstance:
 	return null
 
 func _hide_mesh(m:MeshInstance):
-	if last_focused_object == m: return
+	if current_focus_object != null && current_focus_object.mesh == m: return
 	var mat := _get_material(m)
 	if mat == null: return
-	original_material = mat
-	match transparency_type:
-		"alpha":
-			var mn := mat.duplicate()
-			mn.flags_transparent = true
-			mn.albedo_color.a = 0.5
-			m.set_surface_material(0, mn)
-		"dots":
-			m.set_surface_material(0, dots_shader)
-			if mat.albedo_texture == null:
-				dots_shader.set_shader_param("use_color", true)
-				dots_shader.set_shader_param("color_albedo", mat.albedo_color)
-			else:
-				dots_shader.set_shader_param("use_color", false)
-				dots_shader.set_shader_param("texture_albedo", mat.albedo_texture)
-			tween.interpolate_property(dots_shader, "shader_param/dot_radius", 1.2, 0.2, 0.25)
-			tween.start()
+	var info := HiderInfo.new(m, mat, tween)
+	info.connect("completed", self, "_on_show_complete", [info])
+	info.hide(transparency_type, dots_shader)
+	current_focus_object = info
 
-func _show_mesh(m:MeshInstance, immediate:bool = false):
-	match transparency_type:
-		"alpha":
-			m.set_surface_material(0, original_material)
-		"dots":
-			if !immediate:
-				tween.interpolate_property(dots_shader, "shader_param/dot_radius", 0.2, 1.2, 0.25)
-				tween.start()
-				yield(tween, "tween_completed")
-			m.set_surface_material(0, original_material)
-	original_material = null
+func _on_show_complete(info:HiderInfo): clearing_queue.erase(info)
+
+func _show_current_mesh(immediate:bool = false):
+	if !immediate: clearing_queue.append(current_focus_object)
+	var me := current_focus_object
+	current_focus_object = null
+	me.show(transparency_type, dots_shader, immediate)
 
 func _get_material(m:MeshInstance) -> SpatialMaterial: 
 	var mat := m.get_active_material(0)

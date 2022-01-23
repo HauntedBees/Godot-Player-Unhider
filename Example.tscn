@@ -1,9 +1,8 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://Example.gd" type="Script" id=1]
 [ext_resource path="res://Unhider.gd" type="Script" id=2]
 [ext_resource path="res://leaves.png" type="Texture" id=3]
-[ext_resource path="res://partial.tres" type="Material" id=4]
 
 [sub_resource type="PlaneMesh" id=1]
 
@@ -43,17 +42,6 @@ material/0 = SubResource( 4 )
 [node name="CollisionShape" type="CollisionShape" parent="Obstacle/StaticBody"]
 shape = SubResource( 5 )
 
-[node name="Test Obstacle" type="MeshInstance" parent="."]
-transform = Transform( 0.1, 0, 0, 0, -4.37114e-09, -0.21, 0, 0.1, -9.17939e-09, 0.390889, 0, 0.701023 )
-visible = false
-mesh = SubResource( 3 )
-material/0 = ExtResource( 4 )
-
-[node name="StaticBody" type="StaticBody" parent="Test Obstacle"]
-
-[node name="CollisionShape" type="CollisionShape" parent="Test Obstacle/StaticBody"]
-shape = SubResource( 5 )
-
 [node name="Obstacle3" type="MeshInstance" parent="."]
 transform = Transform( 0.1, 0, 0, 0, -4.37114e-09, -0.21, 0, 0.1, -9.17939e-09, -0.297676, 0, 0.62615 )
 mesh = SubResource( 3 )
@@ -62,6 +50,36 @@ material/0 = SubResource( 4 )
 [node name="StaticBody" type="StaticBody" parent="Obstacle3"]
 
 [node name="CollisionShape" type="CollisionShape" parent="Obstacle3/StaticBody"]
+shape = SubResource( 5 )
+
+[node name="Obstacle6" type="MeshInstance" parent="."]
+transform = Transform( 0.1, 0, 0, 0, -4.37114e-09, -0.21, 0, 0.1, -9.17939e-09, -0.505949, 0, 0.545347 )
+mesh = SubResource( 3 )
+material/0 = SubResource( 4 )
+
+[node name="StaticBody" type="StaticBody" parent="Obstacle6"]
+
+[node name="CollisionShape" type="CollisionShape" parent="Obstacle6/StaticBody"]
+shape = SubResource( 5 )
+
+[node name="Obstacle4" type="MeshInstance" parent="."]
+transform = Transform( 0.1, 0, 0, 0, -4.37114e-09, -0.21, 0, 0.1, -9.17939e-09, -0.121, 0, 0.700365 )
+mesh = SubResource( 3 )
+material/0 = SubResource( 4 )
+
+[node name="StaticBody" type="StaticBody" parent="Obstacle4"]
+
+[node name="CollisionShape" type="CollisionShape" parent="Obstacle4/StaticBody"]
+shape = SubResource( 5 )
+
+[node name="Obstacle5" type="MeshInstance" parent="."]
+transform = Transform( 0.1, 0, 0, 0, -4.37114e-09, -0.21, 0, 0.1, -9.17939e-09, 0.0586627, 0, 0.793986 )
+mesh = SubResource( 3 )
+material/0 = SubResource( 4 )
+
+[node name="StaticBody" type="StaticBody" parent="Obstacle5"]
+
+[node name="CollisionShape" type="CollisionShape" parent="Obstacle5/StaticBody"]
 shape = SubResource( 5 )
 
 [node name="Obstacle2" type="MeshInstance" parent="."]
@@ -73,6 +91,28 @@ material/0 = SubResource( 8 )
 transform = Transform( 1, 0, -3.55271e-15, 0, 1, 1.42109e-14, 0, 0, 1, 0, 0, 0 )
 
 [node name="CollisionShape" type="CollisionShape" parent="Obstacle2/StaticBody"]
+shape = SubResource( 5 )
+
+[node name="Obstacle8" type="MeshInstance" parent="."]
+transform = Transform( 0.398026, -0.00992329, 2.1688e-09, 0, -4.37114e-09, -0.5, 0.0396932, 0.0995064, -2.17478e-08, -0.184676, 0, -0.545279 )
+mesh = SubResource( 3 )
+material/0 = SubResource( 8 )
+
+[node name="StaticBody" type="StaticBody" parent="Obstacle8"]
+transform = Transform( 1, 0, -3.55271e-15, 0, 1, 1.42109e-14, 0, 0, 1, 0, 0, 0 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Obstacle8/StaticBody"]
+shape = SubResource( 5 )
+
+[node name="Obstacle7" type="MeshInstance" parent="."]
+transform = Transform( 0.0375599, -0.0995582, 2.17591e-08, 0, -4.37114e-09, -0.5, 0.398233, 0.00938997, -2.05225e-09, 0.800303, 0, 0.198427 )
+mesh = SubResource( 3 )
+material/0 = SubResource( 8 )
+
+[node name="StaticBody" type="StaticBody" parent="Obstacle7"]
+transform = Transform( 1, 0, -3.55271e-15, 0, 1, 1.42109e-14, 0, 0, 1, 0, 0, 0 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Obstacle7/StaticBody"]
 shape = SubResource( 5 )
 
 [node name="Gimbal" type="Spatial" parent="."]
@@ -94,6 +134,7 @@ material/0 = null
 
 [node name="Unhider" type="Spatial" parent="."]
 script = ExtResource( 2 )
+transparency_type = "dots"
 
 [node name="Control" type="Control" parent="."]
 anchor_top = 1.0
